@@ -6,11 +6,16 @@ import { signInSchema } from '@/schemas/auth';
 import { delay, getError, handleErrorApi } from '@/utils';
 import { setAuthToken } from '@/utils/auth-utils';
 import { useForm } from '@tanstack/react-form';
-import { createFileRoute } from '@tanstack/react-router';
+import { createFileRoute, redirect } from '@tanstack/react-router';
 import { toast } from 'sonner';
 
 export const Route = createFileRoute('/_public-layout/sign-in')({
   component: SignInPage,
+  loader: async ({ context }) => {
+    if (context.isAuthenticated) {
+      throw redirect({ to: '/' });
+    }
+  },
 });
 
 function SignInPage() {
@@ -32,7 +37,7 @@ function SignInPage() {
           setAuthToken(data.accessToken);
           setIsAuthenticated(true);
           await delay(2000);
-          navigate({ to: '/sign-in' });
+          navigate({ to: '/' });
         } catch (error) {
           return {
             fields: {

@@ -1,14 +1,14 @@
-interface FormInputProps extends React.InputHTMLAttributes<HTMLInputElement> {
+interface FormTextareaProps extends React.TextareaHTMLAttributes<HTMLTextAreaElement> {
   label: string;
   name: string;
   placeholder?: string;
   error?: string;
   extra?: React.ReactNode;
-  onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  onChange?: (e: React.ChangeEvent<HTMLTextAreaElement>) => void;
   value?: string;
 }
 
-export function FormInput({
+export function FormTextarea({
   label,
   name,
   placeholder,
@@ -17,7 +17,7 @@ export function FormInput({
   onChange,
   value,
   ...rest
-}: Readonly<FormInputProps>) {
+}: Readonly<FormTextareaProps>) {
   return (
     <div className="flex flex-col gap-1">
       <div className="flex items-center justify-between">
@@ -29,7 +29,7 @@ export function FormInput({
         </label>
         {extra}
       </div>
-      <input
+      <textarea
         value={value}
         onChange={onChange}
         id={name}
