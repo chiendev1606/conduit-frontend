@@ -1,4 +1,4 @@
-import AllProviders from '@/contexts';
+import AllProviders from '@/providers/all-providers';
 import { AuthContextType } from '@/types';
 import { Outlet, createRootRouteWithContext } from '@tanstack/react-router';
 import { TanStackRouterDevtools } from '@tanstack/router-devtools';

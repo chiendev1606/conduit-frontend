@@ -1,16 +1,16 @@
-import { Header } from '@/components';
+import { Header } from '@/components/layout';
 import { createFileRoute, Outlet, redirect } from '@tanstack/react-router';
 
 export const Route = createFileRoute('/_auth-layout')({
-  component: AuthLayout,
+  component: RouteComponent,
   beforeLoad: ({ context }) => {
-    if (!context.isAuthenticated) {
+    if (!context.user) {
       throw redirect({ to: '/sign-in' });
     }
   },
 });
 
-function AuthLayout() {
+function RouteComponent() {
   return (
     <div className="min-h-screen bg-gray-50">
       <Header />

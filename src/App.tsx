@@ -1,17 +1,14 @@
 import { createRouter, RouterProvider } from '@tanstack/react-router';
-import { getAuthToken } from './utils/auth-utils';
-import { routeTree } from './routeTree.gen';
 import { useAuth } from './hooks/useAuth';
+import { routeTree } from './routeTree.gen';
+import { queryClient } from './providers';
 
 const router = createRouter({
   routeTree,
   defaultPreload: 'intent',
   context: {
-    accessToken: getAuthToken(),
     user: null,
-    setUser: () => {},
-    isAuthenticated: getAuthToken() !== null,
-    setIsAuthenticated: () => {},
+    queryClient: queryClient,
   },
 });
 
@@ -23,11 +20,11 @@ declare module '@tanstack/react-router' {
 }
 
 function App() {
-  const { user, setUser, isAuthenticated, setIsAuthenticated } = useAuth();
+  const { user } = useAuth();
 
   return (
     <RouterProvider
-      context={{ user, setUser, isAuthenticated, setIsAuthenticated }}
+      context={{ user, queryClient }}
       router={router}
     />
   );

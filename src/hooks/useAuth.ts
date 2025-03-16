@@ -1,14 +1,11 @@
-import { getAuthToken } from '@/utils/auth-utils';
-import { useState } from 'react';
+import { useProfileQuery } from './queries/use-profile-query';
 
 export const useAuth = () => {
-  const [user, setUser] = useState(null);
-  const [isAuthenticated, setIsAuthenticated] = useState(getAuthToken() !== null);
+  const { data: profile } = useProfileQuery();
+  const isAuthenticated = !!profile;
 
   return {
-    user,
-    setUser,
+    user: profile?.user,
     isAuthenticated,
-    setIsAuthenticated,
   };
 };

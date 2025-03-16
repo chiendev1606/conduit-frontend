@@ -1,6 +1,1 @@
-import { HttpStatusCode } from 'axios';
-
-export type ApiResponse<T> = {
-  data: T;
-  status: HttpStatusCode;
-};
+export type ApiResponse<T> = T;

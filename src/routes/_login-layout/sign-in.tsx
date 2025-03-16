@@ -2,18 +2,20 @@ import { Button, Logo } from '@/components';
 import { FormInput } from '@/components/form';
 import { IconButton } from '@/components/Icon-button';
 import { useSignIn } from '@/hooks/mutations/auth';
+import { profileQueryOptions } from '@/hooks/queries/use-profile-query';
 import { signInSchema } from '@/schemas/auth';
 import { delay, getError, handleErrorApi } from '@/utils';
 import { setAuthToken } from '@/utils/auth-utils';
 import { useForm } from '@tanstack/react-form';
+import { useQueryClient } from '@tanstack/react-query';
 import { createFileRoute, redirect } from '@tanstack/react-router';
 import { toast } from 'sonner';
 
-export const Route = createFileRoute('/_public-layout/sign-in')({
+export const Route = createFileRoute('/_login-layout/sign-in')({
   component: SignInPage,
   loader: async ({ context }) => {
-    if (context.isAuthenticated) {
-      throw redirect({ to: '/' });
+    if (context.user) {
+      throw redirect({ to: '/sign-in' });
     }
   },
 });
@@ -21,24 +23,25 @@ export const Route = createFileRoute('/_public-layout/sign-in')({
 function SignInPage() {
   const { signIn } = useSignIn();
   const navigate = Route.useNavigate();
-  const { setIsAuthenticated } = Route.useRouteContext();
+  const queryClient = useQueryClient();
 
   const form = useForm({
     defaultValues: {
-      email: '',
-      password: '',
+      email: 'mahmood.koech287@bluewin.org',
+      password: '12345678',
     },
     validators: {
       onChange: signInSchema,
       onSubmitAsync: async ({ value }) => {
         try {
-          const { data } = await signIn(value);
+          const { user } = await signIn(value);
           toast.success('Sign in successfully');
-          setAuthToken(data.accessToken);
-          setIsAuthenticated(true);
+          setAuthToken(user.token);
+          await queryClient.ensureQueryData(profileQueryOptions);
           await delay(2000);
           navigate({ to: '/' });
         } catch (error) {
+          console.error(error);
           return {
             fields: {
               email: { message: handleErrorApi(error) },

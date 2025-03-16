@@ -9,7 +9,7 @@ import { signUpSchema } from '@/schemas/auth';
 import { delay, handleErrorApi } from '@/utils';
 import { toast } from 'sonner';
 
-export const Route = createFileRoute('/_public-layout/sign-up')({
+export const Route = createFileRoute('/_login-layout/sign-up')({
   component: SignUpPage,
 });
 
@@ -31,8 +31,9 @@ function SignUpPage() {
           await signUp(value);
           toast.success('Sign up successfully');
           await delay(2000);
-          navigate({ to: '/sign-in' });
+          navigate({ to: '.' });
         } catch (error) {
+          console.error(error);
           return {
             fields: {
               email: { message: handleErrorApi(error) },

@@ -11,72 +11,73 @@
 // Import Routes
 
 import { Route as rootRoute } from './routes/__root'
-import { Route as PublicLayoutImport } from './routes/_public-layout'
-import { Route as AuthLayoutImport } from './routes/_auth-layout'
-import { Route as IndexImport } from './routes/index'
-import { Route as PublicLayoutSignUpImport } from './routes/_public-layout/sign-up'
-import { Route as PublicLayoutSignInImport } from './routes/_public-layout/sign-in'
+import { Route as PublicLayoutRouteImport } from './routes/_public-layout/route'
+import { Route as AuthLayoutRouteImport } from './routes/_auth-layout/route'
+import { Route as PublicLayoutIndexImport } from './routes/_public-layout/index'
+import { Route as LoginLayoutSignUpImport } from './routes/_login-layout/sign-up'
+import { Route as LoginLayoutSignInImport } from './routes/_login-layout/sign-in'
 import { Route as AuthLayoutUserProfileImport } from './routes/_auth-layout/user-profile'
+import { Route as PublicLayoutArticleArticleIdImport } from './routes/_public-layout/article/$articleId'
 
 // Create/Update Routes
 
-const PublicLayoutRoute = PublicLayoutImport.update({
+const PublicLayoutRouteRoute = PublicLayoutRouteImport.update({
   id: '/_public-layout',
   getParentRoute: () => rootRoute,
 } as any)
 
-const AuthLayoutRoute = AuthLayoutImport.update({
+const AuthLayoutRouteRoute = AuthLayoutRouteImport.update({
   id: '/_auth-layout',
   getParentRoute: () => rootRoute,
 } as any)
 
-const IndexRoute = IndexImport.update({
+const PublicLayoutIndexRoute = PublicLayoutIndexImport.update({
   id: '/',
   path: '/',
+  getParentRoute: () => PublicLayoutRouteRoute,
+} as any)
+
+const LoginLayoutSignUpRoute = LoginLayoutSignUpImport.update({
+  id: '/_login-layout/sign-up',
+  path: '/sign-up',
   getParentRoute: () => rootRoute,
 } as any)
 
-const PublicLayoutSignUpRoute = PublicLayoutSignUpImport.update({
-  id: '/sign-up',
-  path: '/sign-up',
-  getParentRoute: () => PublicLayoutRoute,
-} as any)
-
-const PublicLayoutSignInRoute = PublicLayoutSignInImport.update({
-  id: '/sign-in',
+const LoginLayoutSignInRoute = LoginLayoutSignInImport.update({
+  id: '/_login-layout/sign-in',
   path: '/sign-in',
-  getParentRoute: () => PublicLayoutRoute,
+  getParentRoute: () => rootRoute,
 } as any)
 
 const AuthLayoutUserProfileRoute = AuthLayoutUserProfileImport.update({
   id: '/user-profile',
   path: '/user-profile',
-  getParentRoute: () => AuthLayoutRoute,
+  getParentRoute: () => AuthLayoutRouteRoute,
 } as any)
+
+const PublicLayoutArticleArticleIdRoute =
+  PublicLayoutArticleArticleIdImport.update({
+    id: '/article/$articleId',
+    path: '/article/$articleId',
+    getParentRoute: () => PublicLayoutRouteRoute,
+  } as any)
 
 // Populate the FileRoutesByPath interface
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    '/': {
-      id: '/'
-      path: '/'
-      fullPath: '/'
-      preLoaderRoute: typeof IndexImport
-      parentRoute: typeof rootRoute
-    }
     '/_auth-layout': {
       id: '/_auth-layout'
       path: ''
       fullPath: ''
-      preLoaderRoute: typeof AuthLayoutImport
+      preLoaderRoute: typeof AuthLayoutRouteImport
       parentRoute: typeof rootRoute
     }
     '/_public-layout': {
       id: '/_public-layout'
       path: ''
       fullPath: ''
-      preLoaderRoute: typeof PublicLayoutImport
+      preLoaderRoute: typeof PublicLayoutRouteImport
       parentRoute: typeof rootRoute
     }
     '/_auth-layout/user-profile': {
@@ -84,105 +85,136 @@ declare module '@tanstack/react-router' {
       path: '/user-profile'
       fullPath: '/user-profile'
       preLoaderRoute: typeof AuthLayoutUserProfileImport
-      parentRoute: typeof AuthLayoutImport
+      parentRoute: typeof AuthLayoutRouteImport
     }
-    '/_public-layout/sign-in': {
-      id: '/_public-layout/sign-in'
+    '/_login-layout/sign-in': {
+      id: '/_login-layout/sign-in'
       path: '/sign-in'
       fullPath: '/sign-in'
-      preLoaderRoute: typeof PublicLayoutSignInImport
-      parentRoute: typeof PublicLayoutImport
+      preLoaderRoute: typeof LoginLayoutSignInImport
+      parentRoute: typeof rootRoute
     }
-    '/_public-layout/sign-up': {
-      id: '/_public-layout/sign-up'
+    '/_login-layout/sign-up': {
+      id: '/_login-layout/sign-up'
       path: '/sign-up'
       fullPath: '/sign-up'
-      preLoaderRoute: typeof PublicLayoutSignUpImport
-      parentRoute: typeof PublicLayoutImport
+      preLoaderRoute: typeof LoginLayoutSignUpImport
+      parentRoute: typeof rootRoute
+    }
+    '/_public-layout/': {
+      id: '/_public-layout/'
+      path: '/'
+      fullPath: '/'
+      preLoaderRoute: typeof PublicLayoutIndexImport
+      parentRoute: typeof PublicLayoutRouteImport
+    }
+    '/_public-layout/article/$articleId': {
+      id: '/_public-layout/article/$articleId'
+      path: '/article/$articleId'
+      fullPath: '/article/$articleId'
+      preLoaderRoute: typeof PublicLayoutArticleArticleIdImport
+      parentRoute: typeof PublicLayoutRouteImport
     }
   }
 }
 
 // Create and export the route tree
 
-interface AuthLayoutRouteChildren {
+interface AuthLayoutRouteRouteChildren {
   AuthLayoutUserProfileRoute: typeof AuthLayoutUserProfileRoute
 }
 
-const AuthLayoutRouteChildren: AuthLayoutRouteChildren = {
+const AuthLayoutRouteRouteChildren: AuthLayoutRouteRouteChildren = {
   AuthLayoutUserProfileRoute: AuthLayoutUserProfileRoute,
 }
 
-const AuthLayoutRouteWithChildren = AuthLayoutRoute._addFileChildren(
-  AuthLayoutRouteChildren,
+const AuthLayoutRouteRouteWithChildren = AuthLayoutRouteRoute._addFileChildren(
+  AuthLayoutRouteRouteChildren,
 )
 
-interface PublicLayoutRouteChildren {
-  PublicLayoutSignInRoute: typeof PublicLayoutSignInRoute
-  PublicLayoutSignUpRoute: typeof PublicLayoutSignUpRoute
+interface PublicLayoutRouteRouteChildren {
+  PublicLayoutIndexRoute: typeof PublicLayoutIndexRoute
+  PublicLayoutArticleArticleIdRoute: typeof PublicLayoutArticleArticleIdRoute
 }
 
-const PublicLayoutRouteChildren: PublicLayoutRouteChildren = {
-  PublicLayoutSignInRoute: PublicLayoutSignInRoute,
-  PublicLayoutSignUpRoute: PublicLayoutSignUpRoute,
+const PublicLayoutRouteRouteChildren: PublicLayoutRouteRouteChildren = {
+  PublicLayoutIndexRoute: PublicLayoutIndexRoute,
+  PublicLayoutArticleArticleIdRoute: PublicLayoutArticleArticleIdRoute,
 }
 
-const PublicLayoutRouteWithChildren = PublicLayoutRoute._addFileChildren(
-  PublicLayoutRouteChildren,
-)
+const PublicLayoutRouteRouteWithChildren =
+  PublicLayoutRouteRoute._addFileChildren(PublicLayoutRouteRouteChildren)
 
 export interface FileRoutesByFullPath {
-  '/': typeof IndexRoute
-  '': typeof PublicLayoutRouteWithChildren
+  '': typeof PublicLayoutRouteRouteWithChildren
   '/user-profile': typeof AuthLayoutUserProfileRoute
-  '/sign-in': typeof PublicLayoutSignInRoute
-  '/sign-up': typeof PublicLayoutSignUpRoute
+  '/sign-in': typeof LoginLayoutSignInRoute
+  '/sign-up': typeof LoginLayoutSignUpRoute
+  '/': typeof PublicLayoutIndexRoute
+  '/article/$articleId': typeof PublicLayoutArticleArticleIdRoute
 }
 
 export interface FileRoutesByTo {
-  '/': typeof IndexRoute
-  '': typeof PublicLayoutRouteWithChildren
+  '': typeof AuthLayoutRouteRouteWithChildren
   '/user-profile': typeof AuthLayoutUserProfileRoute
-  '/sign-in': typeof PublicLayoutSignInRoute
-  '/sign-up': typeof PublicLayoutSignUpRoute
+  '/sign-in': typeof LoginLayoutSignInRoute
+  '/sign-up': typeof LoginLayoutSignUpRoute
+  '/': typeof PublicLayoutIndexRoute
+  '/article/$articleId': typeof PublicLayoutArticleArticleIdRoute
 }
 
 export interface FileRoutesById {
   __root__: typeof rootRoute
-  '/': typeof IndexRoute
-  '/_auth-layout': typeof AuthLayoutRouteWithChildren
-  '/_public-layout': typeof PublicLayoutRouteWithChildren
+  '/_auth-layout': typeof AuthLayoutRouteRouteWithChildren
+  '/_public-layout': typeof PublicLayoutRouteRouteWithChildren
   '/_auth-layout/user-profile': typeof AuthLayoutUserProfileRoute
-  '/_public-layout/sign-in': typeof PublicLayoutSignInRoute
-  '/_public-layout/sign-up': typeof PublicLayoutSignUpRoute
+  '/_login-layout/sign-in': typeof LoginLayoutSignInRoute
+  '/_login-layout/sign-up': typeof LoginLayoutSignUpRoute
+  '/_public-layout/': typeof PublicLayoutIndexRoute
+  '/_public-layout/article/$articleId': typeof PublicLayoutArticleArticleIdRoute
 }
 
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '' | '/user-profile' | '/sign-in' | '/sign-up'
+  fullPaths:
+    | ''
+    | '/user-profile'
+    | '/sign-in'
+    | '/sign-up'
+    | '/'
+    | '/article/$articleId'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '' | '/user-profile' | '/sign-in' | '/sign-up'
+  to:
+    | ''
+    | '/user-profile'
+    | '/sign-in'
+    | '/sign-up'
+    | '/'
+    | '/article/$articleId'
   id:
     | '__root__'
-    | '/'
     | '/_auth-layout'
     | '/_public-layout'
     | '/_auth-layout/user-profile'
-    | '/_public-layout/sign-in'
-    | '/_public-layout/sign-up'
+    | '/_login-layout/sign-in'
+    | '/_login-layout/sign-up'
+    | '/_public-layout/'
+    | '/_public-layout/article/$articleId'
   fileRoutesById: FileRoutesById
 }
 
 export interface RootRouteChildren {
-  IndexRoute: typeof IndexRoute
-  AuthLayoutRoute: typeof AuthLayoutRouteWithChildren
-  PublicLayoutRoute: typeof PublicLayoutRouteWithChildren
+  AuthLayoutRouteRoute: typeof AuthLayoutRouteRouteWithChildren
+  PublicLayoutRouteRoute: typeof PublicLayoutRouteRouteWithChildren
+  LoginLayoutSignInRoute: typeof LoginLayoutSignInRoute
+  LoginLayoutSignUpRoute: typeof LoginLayoutSignUpRoute
 }
 
 const rootRouteChildren: RootRouteChildren = {
-  IndexRoute: IndexRoute,
-  AuthLayoutRoute: AuthLayoutRouteWithChildren,
-  PublicLayoutRoute: PublicLayoutRouteWithChildren,
+  AuthLayoutRouteRoute: AuthLayoutRouteRouteWithChildren,
+  PublicLayoutRouteRoute: PublicLayoutRouteRouteWithChildren,
+  LoginLayoutSignInRoute: LoginLayoutSignInRoute,
+  LoginLayoutSignUpRoute: LoginLayoutSignUpRoute,
 }
 
 export const routeTree = rootRoute
@@ -195,37 +227,41 @@ export const routeTree = rootRoute
     "__root__": {
       "filePath": "__root.tsx",
       "children": [
-        "/",
         "/_auth-layout",
-        "/_public-layout"
+        "/_public-layout",
+        "/_login-layout/sign-in",
+        "/_login-layout/sign-up"
       ]
     },
-    "/": {
-      "filePath": "index.tsx"
-    },
     "/_auth-layout": {
-      "filePath": "_auth-layout.tsx",
+      "filePath": "_auth-layout/route.tsx",
       "children": [
         "/_auth-layout/user-profile"
       ]
     },
     "/_public-layout": {
-      "filePath": "_public-layout.tsx",
+      "filePath": "_public-layout/route.tsx",
       "children": [
-        "/_public-layout/sign-in",
-        "/_public-layout/sign-up"
+        "/_public-layout/",
+        "/_public-layout/article/$articleId"
       ]
     },
     "/_auth-layout/user-profile": {
       "filePath": "_auth-layout/user-profile.tsx",
       "parent": "/_auth-layout"
     },
-    "/_public-layout/sign-in": {
-      "filePath": "_public-layout/sign-in.tsx",
+    "/_login-layout/sign-in": {
+      "filePath": "_login-layout/sign-in.tsx"
+    },
+    "/_login-layout/sign-up": {
+      "filePath": "_login-layout/sign-up.tsx"
+    },
+    "/_public-layout/": {
+      "filePath": "_public-layout/index.tsx",
       "parent": "/_public-layout"
     },
-    "/_public-layout/sign-up": {
-      "filePath": "_public-layout/sign-up.tsx",
+    "/_public-layout/article/$articleId": {
+      "filePath": "_public-layout/article/$articleId.tsx",
       "parent": "/_public-layout"
     }
   }
