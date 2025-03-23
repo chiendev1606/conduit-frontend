@@ -23,6 +23,7 @@ function SignUpPage() {
       email: '',
       password: '',
       confirmPassword: '',
+      username: '',
     },
     validators: {
       onChange: signUpSchema,
@@ -30,8 +31,7 @@ function SignUpPage() {
         try {
           await signUp(value);
           toast.success('Sign up successfully');
-          await delay(2000);
-          navigate({ to: '.' });
+          navigate({ to: '/sign-in' });
         } catch (error) {
           console.error(error);
           return {
@@ -82,6 +82,21 @@ function SignUpPage() {
                     label="Email"
                     name="email"
                     placeholder="john.doe@example.com"
+                    error={getError(field)}
+                    value={field.state.value}
+                    onChange={(e) => field.handleChange(e.target.value)}
+                  />
+                )}
+              </form.Field>
+            </div>
+
+            <div>
+              <form.Field name="username">
+                {(field) => (
+                  <FormInput
+                    label="Username"
+                    name="username"
+                    placeholder="John Doe"
                     error={getError(field)}
                     value={field.state.value}
                     onChange={(e) => field.handleChange(e.target.value)}

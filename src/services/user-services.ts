@@ -1,4 +1,5 @@
 import { AuthResponse } from '@/types';
+import { UpdateUserSchema } from '@/schemas/user';
 import BaseServices from './base-services';
 
 export class UserServices extends BaseServices {
@@ -17,6 +18,10 @@ export class UserServices extends BaseServices {
 
   getMe = async () => {
     return this.get<AuthResponse>('');
+  };
+
+  updateUser = async (userData: UpdateUserSchema) => {
+    return this.put<AuthResponse>('', { user: userData });
   };
 }
 

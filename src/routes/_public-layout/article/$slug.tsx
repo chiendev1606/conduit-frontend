@@ -1,42 +1,28 @@
 import { ArticleComments } from '@/components/article/article-comments';
 import { ArticleContent } from '@/components/article/article-content';
 import { ArticleMeta } from '@/components/article/article-meta';
+import LoadingScreen from '@/components/common/loading-screen';
 import Error404 from '@/components/error/error-404';
-import Loading from '@/components/loading';
 import { articleDetailsQueryOptions, useArticleDetailsQuery } from '@/hooks/queries/use-article-details-query';
+import useCommentsQuery, { commentQueryOptions } from '@/hooks/queries/use-comments.query';
 import { delay } from '@/utils';
 import { createFileRoute } from '@tanstack/react-router';
 
-export const Route = createFileRoute('/_public-layout/article/$articleId')({
+export const Route = createFileRoute('/_public-layout/article/$slug')({
   component: ArticlePage,
-  loader: async ({ params, context }) => {
+  loader: async ({ params, context: { queryClient } }) => {
     await delay(2000);
-    return context.queryClient.ensureQueryData(articleDetailsQueryOptions(params.articleId));
+    await queryClient.ensureQueryData(commentQueryOptions(params.slug));
+    return queryClient.ensureQueryData(articleDetailsQueryOptions(params.slug));
   },
-  pendingComponent: () => (
-    <div className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2">
-      <Loading />
-    </div>
-  ),
+  pendingComponent: LoadingScreen,
   errorComponent: () => <Error404 />,
 });
 
 function ArticlePage() {
-  const { articleId } = Route.useParams();
-  const { data } = useArticleDetailsQuery(articleId);
-  const article = data?.article;
-
-  const comments = [
-    {
-      id: 1,
-      body: 'werdgfdghfghfg',
-      createdAt: '2024-03-14',
-      author: {
-        username: 'dimitris',
-        image: 'https://api.realworld.io/images/dimitris.jpg',
-      },
-    },
-  ];
+  const { slug } = Route.useParams();
+  const { article } = useArticleDetailsQuery(slug);
+  const { comments } = useCommentsQuery(slug);
 
   return (
     <div>
@@ -53,7 +39,6 @@ function ArticlePage() {
             favorited={article?.favorited}
             following={article?.author?.following}
             favoritesCount={article?.favoritesCount}
-            onFavorite={() => console.log('favorite')}
           />
         </div>
       </div>
@@ -62,9 +47,7 @@ function ArticlePage() {
       <div className="container mx-auto px-4">
         <ArticleComments
           comments={comments}
-          onPostComment={(comment) => console.log('post comment', comment)}
-          onDeleteComment={(id) => console.log('delete comment', id)}
-          currentUser="dimitris"
+          authorArticle={article.author}
         />
       </div>
     </div>

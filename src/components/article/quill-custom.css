@@ -1,0 +1,69 @@
+/* Custom styles for React Quill editor */
+
+.quill-custom-font .ql-editor {
+  font-family:
+    'Inter',
+    -apple-system,
+    BlinkMacSystemFont,
+    'Segoe UI',
+    Roboto,
+    Oxygen,
+    Ubuntu,
+    Cantarell,
+    'Open Sans',
+    'Helvetica Neue',
+    sans-serif;
+  font-size: 1rem;
+  line-height: 1.5;
+}
+
+.quill-custom-font .ql-editor p {
+  font-family:
+    'Inter',
+    -apple-system,
+    BlinkMacSystemFont,
+    'Segoe UI',
+    Roboto,
+    Oxygen,
+    Ubuntu,
+    Cantarell,
+    'Open Sans',
+    'Helvetica Neue',
+    sans-serif;
+}
+
+/* Style the placeholder text */
+.quill-custom-font .ql-editor.ql-blank::before {
+  font-family:
+    'Inter',
+    -apple-system,
+    BlinkMacSystemFont,
+    'Segoe UI',
+    Roboto,
+    Oxygen,
+    Ubuntu,
+    Cantarell,
+    'Open Sans',
+    'Helvetica Neue',
+    sans-serif;
+  font-style: normal;
+  color: #9ca3af;
+}
+
+/* Make sure the text content in the editor also uses the same font */
+.ql-snow .ql-editor pre.ql-syntax,
+.ql-snow .ql-editor code,
+.ql-snow .ql-editor pre {
+  font-family:
+    'Inter',
+    -apple-system,
+    BlinkMacSystemFont,
+    'Segoe UI',
+    Roboto,
+    Oxygen,
+    Ubuntu,
+    Cantarell,
+    'Open Sans',
+    'Helvetica Neue',
+    sans-serif;
+}

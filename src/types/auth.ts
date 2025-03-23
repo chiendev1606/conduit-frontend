@@ -2,11 +2,13 @@ import { QueryClient } from '@tanstack/react-query';
 import { ApiResponse } from './common';
 
 export type User = {
-  id: string;
+  id: number;
   email: string;
   name: string;
   role: string;
   token: string;
+  username: string;
+  bio: string | null;
 };
 
 export type AuthResponse = ApiResponse<{
@@ -14,6 +16,5 @@ export type AuthResponse = ApiResponse<{
 }>;
 
 export type AuthContextType = {
-  user: User | null;
   queryClient: QueryClient;
 };

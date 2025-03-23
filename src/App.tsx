@@ -1,13 +1,11 @@
 import { createRouter, RouterProvider } from '@tanstack/react-router';
-import { useAuth } from './hooks/useAuth';
-import { routeTree } from './routeTree.gen';
 import { queryClient } from './providers';
+import { routeTree } from './routeTree.gen';
 
 const router = createRouter({
   routeTree,
   defaultPreload: 'intent',
   context: {
-    user: null,
     queryClient: queryClient,
   },
 });
@@ -20,11 +18,9 @@ declare module '@tanstack/react-router' {
 }
 
 function App() {
-  const { user } = useAuth();
-
   return (
     <RouterProvider
-      context={{ user, queryClient }}
+      context={{ queryClient }}
       router={router}
     />
   );

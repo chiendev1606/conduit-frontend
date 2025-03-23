@@ -9,5 +9,6 @@ export const articleDetailsQueryOptions = (slug: string) => ({
 });
 
 export const useArticleDetailsQuery = (slug: string) => {
-  return useSuspenseQuery(articleDetailsQueryOptions(slug));
+  const query = useSuspenseQuery(articleDetailsQueryOptions(slug));
+  return { ...query, article: query.data?.article ?? [] };
 };

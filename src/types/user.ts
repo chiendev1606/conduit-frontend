@@ -3,4 +3,5 @@ export type AuthorArticle = {
   bio: string;
   image: string;
   following?: boolean;
+  id: number;
 };

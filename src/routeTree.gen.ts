@@ -16,8 +16,11 @@ import { Route as AuthLayoutRouteImport } from './routes/_auth-layout/route'
 import { Route as PublicLayoutIndexImport } from './routes/_public-layout/index'
 import { Route as LoginLayoutSignUpImport } from './routes/_login-layout/sign-up'
 import { Route as LoginLayoutSignInImport } from './routes/_login-layout/sign-in'
-import { Route as AuthLayoutUserProfileImport } from './routes/_auth-layout/user-profile'
-import { Route as PublicLayoutArticleArticleIdImport } from './routes/_public-layout/article/$articleId'
+import { Route as AuthLayoutSettingsImport } from './routes/_auth-layout/settings'
+import { Route as AuthLayoutProfileImport } from './routes/_auth-layout/profile'
+import { Route as AuthLayoutMyFeedImport } from './routes/_auth-layout/my-feed'
+import { Route as AuthLayoutEditorImport } from './routes/_auth-layout/editor'
+import { Route as PublicLayoutArticleSlugImport } from './routes/_public-layout/article/$slug'
 
 // Create/Update Routes
 
@@ -49,18 +52,35 @@ const LoginLayoutSignInRoute = LoginLayoutSignInImport.update({
   getParentRoute: () => rootRoute,
 } as any)
 
-const AuthLayoutUserProfileRoute = AuthLayoutUserProfileImport.update({
-  id: '/user-profile',
-  path: '/user-profile',
+const AuthLayoutSettingsRoute = AuthLayoutSettingsImport.update({
+  id: '/settings',
+  path: '/settings',
   getParentRoute: () => AuthLayoutRouteRoute,
 } as any)
 
-const PublicLayoutArticleArticleIdRoute =
-  PublicLayoutArticleArticleIdImport.update({
-    id: '/article/$articleId',
-    path: '/article/$articleId',
-    getParentRoute: () => PublicLayoutRouteRoute,
-  } as any)
+const AuthLayoutProfileRoute = AuthLayoutProfileImport.update({
+  id: '/profile',
+  path: '/profile',
+  getParentRoute: () => AuthLayoutRouteRoute,
+} as any)
+
+const AuthLayoutMyFeedRoute = AuthLayoutMyFeedImport.update({
+  id: '/my-feed',
+  path: '/my-feed',
+  getParentRoute: () => AuthLayoutRouteRoute,
+} as any)
+
+const AuthLayoutEditorRoute = AuthLayoutEditorImport.update({
+  id: '/editor',
+  path: '/editor',
+  getParentRoute: () => AuthLayoutRouteRoute,
+} as any)
+
+const PublicLayoutArticleSlugRoute = PublicLayoutArticleSlugImport.update({
+  id: '/article/$slug',
+  path: '/article/$slug',
+  getParentRoute: () => PublicLayoutRouteRoute,
+} as any)
 
 // Populate the FileRoutesByPath interface
 
@@ -80,11 +100,32 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof PublicLayoutRouteImport
       parentRoute: typeof rootRoute
     }
-    '/_auth-layout/user-profile': {
-      id: '/_auth-layout/user-profile'
-      path: '/user-profile'
-      fullPath: '/user-profile'
-      preLoaderRoute: typeof AuthLayoutUserProfileImport
+    '/_auth-layout/editor': {
+      id: '/_auth-layout/editor'
+      path: '/editor'
+      fullPath: '/editor'
+      preLoaderRoute: typeof AuthLayoutEditorImport
+      parentRoute: typeof AuthLayoutRouteImport
+    }
+    '/_auth-layout/my-feed': {
+      id: '/_auth-layout/my-feed'
+      path: '/my-feed'
+      fullPath: '/my-feed'
+      preLoaderRoute: typeof AuthLayoutMyFeedImport
+      parentRoute: typeof AuthLayoutRouteImport
+    }
+    '/_auth-layout/profile': {
+      id: '/_auth-layout/profile'
+      path: '/profile'
+      fullPath: '/profile'
+      preLoaderRoute: typeof AuthLayoutProfileImport
+      parentRoute: typeof AuthLayoutRouteImport
+    }
+    '/_auth-layout/settings': {
+      id: '/_auth-layout/settings'
+      path: '/settings'
+      fullPath: '/settings'
+      preLoaderRoute: typeof AuthLayoutSettingsImport
       parentRoute: typeof AuthLayoutRouteImport
     }
     '/_login-layout/sign-in': {
@@ -108,11 +149,11 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof PublicLayoutIndexImport
       parentRoute: typeof PublicLayoutRouteImport
     }
-    '/_public-layout/article/$articleId': {
-      id: '/_public-layout/article/$articleId'
-      path: '/article/$articleId'
-      fullPath: '/article/$articleId'
-      preLoaderRoute: typeof PublicLayoutArticleArticleIdImport
+    '/_public-layout/article/$slug': {
+      id: '/_public-layout/article/$slug'
+      path: '/article/$slug'
+      fullPath: '/article/$slug'
+      preLoaderRoute: typeof PublicLayoutArticleSlugImport
       parentRoute: typeof PublicLayoutRouteImport
     }
   }
@@ -121,11 +162,17 @@ declare module '@tanstack/react-router' {
 // Create and export the route tree
 
 interface AuthLayoutRouteRouteChildren {
-  AuthLayoutUserProfileRoute: typeof AuthLayoutUserProfileRoute
+  AuthLayoutEditorRoute: typeof AuthLayoutEditorRoute
+  AuthLayoutMyFeedRoute: typeof AuthLayoutMyFeedRoute
+  AuthLayoutProfileRoute: typeof AuthLayoutProfileRoute
+  AuthLayoutSettingsRoute: typeof AuthLayoutSettingsRoute
 }
 
 const AuthLayoutRouteRouteChildren: AuthLayoutRouteRouteChildren = {
-  AuthLayoutUserProfileRoute: AuthLayoutUserProfileRoute,
+  AuthLayoutEditorRoute: AuthLayoutEditorRoute,
+  AuthLayoutMyFeedRoute: AuthLayoutMyFeedRoute,
+  AuthLayoutProfileRoute: AuthLayoutProfileRoute,
+  AuthLayoutSettingsRoute: AuthLayoutSettingsRoute,
 }
 
 const AuthLayoutRouteRouteWithChildren = AuthLayoutRouteRoute._addFileChildren(
@@ -134,12 +181,12 @@ const AuthLayoutRouteRouteWithChildren = AuthLayoutRouteRoute._addFileChildren(
 
 interface PublicLayoutRouteRouteChildren {
   PublicLayoutIndexRoute: typeof PublicLayoutIndexRoute
-  PublicLayoutArticleArticleIdRoute: typeof PublicLayoutArticleArticleIdRoute
+  PublicLayoutArticleSlugRoute: typeof PublicLayoutArticleSlugRoute
 }
 
 const PublicLayoutRouteRouteChildren: PublicLayoutRouteRouteChildren = {
   PublicLayoutIndexRoute: PublicLayoutIndexRoute,
-  PublicLayoutArticleArticleIdRoute: PublicLayoutArticleArticleIdRoute,
+  PublicLayoutArticleSlugRoute: PublicLayoutArticleSlugRoute,
 }
 
 const PublicLayoutRouteRouteWithChildren =
@@ -147,59 +194,77 @@ const PublicLayoutRouteRouteWithChildren =
 
 export interface FileRoutesByFullPath {
   '': typeof PublicLayoutRouteRouteWithChildren
-  '/user-profile': typeof AuthLayoutUserProfileRoute
+  '/editor': typeof AuthLayoutEditorRoute
+  '/my-feed': typeof AuthLayoutMyFeedRoute
+  '/profile': typeof AuthLayoutProfileRoute
+  '/settings': typeof AuthLayoutSettingsRoute
   '/sign-in': typeof LoginLayoutSignInRoute
   '/sign-up': typeof LoginLayoutSignUpRoute
   '/': typeof PublicLayoutIndexRoute
-  '/article/$articleId': typeof PublicLayoutArticleArticleIdRoute
+  '/article/$slug': typeof PublicLayoutArticleSlugRoute
 }
 
 export interface FileRoutesByTo {
   '': typeof AuthLayoutRouteRouteWithChildren
-  '/user-profile': typeof AuthLayoutUserProfileRoute
+  '/editor': typeof AuthLayoutEditorRoute
+  '/my-feed': typeof AuthLayoutMyFeedRoute
+  '/profile': typeof AuthLayoutProfileRoute
+  '/settings': typeof AuthLayoutSettingsRoute
   '/sign-in': typeof LoginLayoutSignInRoute
   '/sign-up': typeof LoginLayoutSignUpRoute
   '/': typeof PublicLayoutIndexRoute
-  '/article/$articleId': typeof PublicLayoutArticleArticleIdRoute
+  '/article/$slug': typeof PublicLayoutArticleSlugRoute
 }
 
 export interface FileRoutesById {
   __root__: typeof rootRoute
   '/_auth-layout': typeof AuthLayoutRouteRouteWithChildren
   '/_public-layout': typeof PublicLayoutRouteRouteWithChildren
-  '/_auth-layout/user-profile': typeof AuthLayoutUserProfileRoute
+  '/_auth-layout/editor': typeof AuthLayoutEditorRoute
+  '/_auth-layout/my-feed': typeof AuthLayoutMyFeedRoute
+  '/_auth-layout/profile': typeof AuthLayoutProfileRoute
+  '/_auth-layout/settings': typeof AuthLayoutSettingsRoute
   '/_login-layout/sign-in': typeof LoginLayoutSignInRoute
   '/_login-layout/sign-up': typeof LoginLayoutSignUpRoute
   '/_public-layout/': typeof PublicLayoutIndexRoute
-  '/_public-layout/article/$articleId': typeof PublicLayoutArticleArticleIdRoute
+  '/_public-layout/article/$slug': typeof PublicLayoutArticleSlugRoute
 }
 
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | ''
-    | '/user-profile'
+    | '/editor'
+    | '/my-feed'
+    | '/profile'
+    | '/settings'
     | '/sign-in'
     | '/sign-up'
     | '/'
-    | '/article/$articleId'
+    | '/article/$slug'
   fileRoutesByTo: FileRoutesByTo
   to:
     | ''
-    | '/user-profile'
+    | '/editor'
+    | '/my-feed'
+    | '/profile'
+    | '/settings'
     | '/sign-in'
     | '/sign-up'
     | '/'
-    | '/article/$articleId'
+    | '/article/$slug'
   id:
     | '__root__'
     | '/_auth-layout'
     | '/_public-layout'
-    | '/_auth-layout/user-profile'
+    | '/_auth-layout/editor'
+    | '/_auth-layout/my-feed'
+    | '/_auth-layout/profile'
+    | '/_auth-layout/settings'
     | '/_login-layout/sign-in'
     | '/_login-layout/sign-up'
     | '/_public-layout/'
-    | '/_public-layout/article/$articleId'
+    | '/_public-layout/article/$slug'
   fileRoutesById: FileRoutesById
 }
 
@@ -236,18 +301,33 @@ export const routeTree = rootRoute
     "/_auth-layout": {
       "filePath": "_auth-layout/route.tsx",
       "children": [
-        "/_auth-layout/user-profile"
+        "/_auth-layout/editor",
+        "/_auth-layout/my-feed",
+        "/_auth-layout/profile",
+        "/_auth-layout/settings"
       ]
     },
     "/_public-layout": {
       "filePath": "_public-layout/route.tsx",
       "children": [
         "/_public-layout/",
-        "/_public-layout/article/$articleId"
+        "/_public-layout/article/$slug"
       ]
     },
-    "/_auth-layout/user-profile": {
-      "filePath": "_auth-layout/user-profile.tsx",
+    "/_auth-layout/editor": {
+      "filePath": "_auth-layout/editor.tsx",
+      "parent": "/_auth-layout"
+    },
+    "/_auth-layout/my-feed": {
+      "filePath": "_auth-layout/my-feed.tsx",
+      "parent": "/_auth-layout"
+    },
+    "/_auth-layout/profile": {
+      "filePath": "_auth-layout/profile.tsx",
+      "parent": "/_auth-layout"
+    },
+    "/_auth-layout/settings": {
+      "filePath": "_auth-layout/settings.tsx",
       "parent": "/_auth-layout"
     },
     "/_login-layout/sign-in": {
@@ -260,8 +340,8 @@ export const routeTree = rootRoute
       "filePath": "_public-layout/index.tsx",
       "parent": "/_public-layout"
     },
-    "/_public-layout/article/$articleId": {
-      "filePath": "_public-layout/article/$articleId.tsx",
+    "/_public-layout/article/$slug": {
+      "filePath": "_public-layout/article/$slug.tsx",
       "parent": "/_public-layout"
     }
   }

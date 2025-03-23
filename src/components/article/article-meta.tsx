@@ -1,5 +1,7 @@
+import { useFavoriteMutation, useUnfavoriteMutation } from '@/hooks/mutations/use-favorite-mutation';
 import { useFollowMutation, useUnFollowMutation } from '@/hooks/mutations/use-follow-mutation';
 import { queryKeys } from '@/hooks/queries/query-key';
+import { useProfileQuery } from '@/hooks/queries/use-profile-query';
 import { formatDate } from '@/utils/date';
 import { useQueryClient } from '@tanstack/react-query';
 import { useParams } from '@tanstack/react-router';
@@ -10,32 +12,35 @@ interface ArticleMetaProps {
   following?: boolean;
   favorited?: boolean;
   favoritesCount?: number;
-  onFavorite?: () => void;
 }
 
-export const ArticleMeta = ({
-  username,
-  createdAt,
-  following,
-  favorited = false,
-  favoritesCount = 0,
-  onFavorite,
-}: ArticleMetaProps) => {
+export const ArticleMeta = ({ username, createdAt, following, favorited, favoritesCount = 0 }: ArticleMetaProps) => {
   const { followUser } = useFollowMutation();
   const { unFollowUser } = useUnFollowMutation();
-  const { articleId } = useParams({ from: '/_public-layout/article/$articleId' });
-
+  const { unfavorite } = useUnfavoriteMutation();
+  const { favorite } = useFavoriteMutation();
+  const { slug } = useParams({ from: '/_public-layout/article/$slug' });
+  const { user } = useProfileQuery();
+  const isAuthor = user?.username === username;
   const queryClient = useQueryClient();
 
-  const handleFollow = () => {
-    const onSuccess = () => {
-      queryClient.invalidateQueries({ queryKey: queryKeys.articles.detail(articleId) });
-    };
+  const refetchArticle = () => {
+    queryClient.invalidateQueries({ queryKey: queryKeys.articles.detail(slug) });
+  };
 
+  const handleFollow = () => {
     if (following) {
-      unFollowUser(username, { onSuccess });
+      unFollowUser(username, { onSuccess: refetchArticle });
     } else {
-      followUser(username, { onSuccess });
+      followUser(username, { onSuccess: refetchArticle });
+    }
+  };
+
+  const handleFavorite = () => {
+    if (favorited) {
+      unfavorite(slug, { onSuccess: refetchArticle });
+    } else {
+      favorite(slug, { onSuccess: refetchArticle });
     }
   };
 
@@ -52,17 +57,19 @@ export const ArticleMeta = ({
         <span className="text-sm text-gray-400">{formatDate(createdAt)}</span>
       </div>
       <div className="ml-auto flex items-center space-x-2">
+        {!isAuthor && (
+          <button
+            onClick={handleFollow}
+            className={`rounded-md border px-3 py-1 text-sm ${
+              following ? 'border-gray-400 bg-gray-200 text-gray-600' : 'border-gray-300 text-gray-400 hover:bg-gray-50'
+            }`}
+          >
+            {following ? 'Following' : 'Follow'} {username}
+          </button>
+        )}
         <button
-          onClick={handleFollow}
-          className={`rounded-md border px-3 py-1 text-sm ${
-            following ? 'border-gray-400 bg-gray-200 text-gray-600' : 'border-gray-300 text-gray-400 hover:bg-gray-50'
-          }`}
-        >
-          {following ? 'Following' : 'Follow'} {username}
-        </button>
-        <button
-          onClick={onFavorite}
-          className={`rounded-md border px-3 py-1 text-sm ${
+          onClick={handleFavorite}
+          className={`cursor-pointer rounded-md border px-3 py-1 text-sm ${
             favorited ? 'border-green-500 bg-green-500 text-white' : 'border-green-500 text-green-500 hover:bg-green-50'
           }`}
         >

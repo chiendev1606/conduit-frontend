@@ -1,11 +1,18 @@
+import { useEffect, useState } from 'react';
 import { useProfileQuery } from './queries/use-profile-query';
+import { getAuthToken } from '@/utils/auth-utils';
 
 export const useAuth = () => {
-  const { data: profile } = useProfileQuery();
-  const isAuthenticated = !!profile;
+  const { isLoading, error } = useProfileQuery();
+  const [isAuthenticated, setIsAuthenticated] = useState(getAuthToken() !== null);
+
+  useEffect(() => {
+    if (error && !isLoading) {
+      setIsAuthenticated(false);
+    }
+  }, [error, isLoading]);
 
   return {
-    user: profile?.user,
     isAuthenticated,
   };
 };

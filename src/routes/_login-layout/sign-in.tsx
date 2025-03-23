@@ -2,7 +2,7 @@ import { Button, Logo } from '@/components';
 import { FormInput } from '@/components/form';
 import { IconButton } from '@/components/Icon-button';
 import { useSignIn } from '@/hooks/mutations/auth';
-import { profileQueryOptions } from '@/hooks/queries/use-profile-query';
+import { checkAuth, profileQueryOptions } from '@/hooks/queries/use-profile-query';
 import { signInSchema } from '@/schemas/auth';
 import { delay, getError, handleErrorApi } from '@/utils';
 import { setAuthToken } from '@/utils/auth-utils';
@@ -13,9 +13,10 @@ import { toast } from 'sonner';
 
 export const Route = createFileRoute('/_login-layout/sign-in')({
   component: SignInPage,
-  loader: async ({ context }) => {
-    if (context.user) {
-      throw redirect({ to: '/sign-in' });
+  loader: async ({ context: { queryClient } }) => {
+    const isAuth = await checkAuth(queryClient);
+    if (isAuth) {
+      throw redirect({ to: '/' });
     }
   },
 });

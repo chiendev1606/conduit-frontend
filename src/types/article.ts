@@ -12,7 +12,7 @@ export type CreateArticleRequest = {
   title: string;
   description: string;
   body: string;
-  tagList: string[];
+  tagList?: string[];
 };
 
 export type UpdateArticleRequest = Partial<Omit<CreateArticleRequest, 'tagList'>>;
