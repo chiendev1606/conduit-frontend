@@ -1,9 +1,10 @@
 import { useFavoriteMutation, useUnfavoriteMutation } from '@/hooks/mutations/use-favorite-mutation';
 import { queryKeys } from '@/hooks/queries/query-key';
+import { useProfileQuery } from '@/hooks/queries/use-profile-query';
 import { Article, ArticleDetailsResponse, ArticleQuery, ArticlesResponse } from '@/types/article';
 import { formatDate } from '@/utils/date';
 import { useQueryClient } from '@tanstack/react-query';
-import { Link, useRouterState, useSearch } from '@tanstack/react-router';
+import { Link, useRouter, useRouterState, useSearch } from '@tanstack/react-router';
 
 interface FeedItemProps {
   data: Article;
@@ -25,6 +26,8 @@ export const FeedItem = ({ data }: FeedItemProps) => {
 
   const search = useSearch({ from: isHomepage ? '/_public-layout/' : '/_auth-layout/my-feed', shouldThrow: false });
 
+  const { navigate } = useRouter();
+  const { user } = useProfileQuery();
   const updateArticleData = (data: ArticleDetailsResponse) => {
     const queryKey = getQueryKeyArticleByPathname({
       offset: ((search?.page ?? 1) - 1) * (search?.limit ?? 10),
@@ -51,6 +54,10 @@ export const FeedItem = ({ data }: FeedItemProps) => {
   };
 
   const handleFavorite = () => {
+    if (!user) {
+      navigate({ to: '/sign-in' });
+      return;
+    }
     if (data.favorited) {
       unfavorite(data.slug, {
         onSuccess: (data) => {
@@ -71,7 +78,7 @@ export const FeedItem = ({ data }: FeedItemProps) => {
       <div className="mb-4 flex items-center justify-between">
         <div className="flex items-center">
           <img
-            src="https://www.gravatar.com/avatar/?d=identicon"
+            src={data.author.image}
             alt={data.author.username}
             className="h-10 w-10 rounded-full"
           />
@@ -104,6 +111,7 @@ export const FeedItem = ({ data }: FeedItemProps) => {
         <Link
           to="/article/$slug"
           params={{ slug: data.slug }}
+          preload={false}
         >
           {data.title}
         </Link>
@@ -114,6 +122,7 @@ export const FeedItem = ({ data }: FeedItemProps) => {
           to="/article/$slug"
           params={{ slug: data.slug }}
           className="cursor-pointer"
+          preload={false}
         >
           <button className="text-sm text-gray-500 hover:text-gray-700">Read more...</button>
         </Link>

@@ -8,13 +8,15 @@ import { delay, getError, handleErrorApi } from '@/utils';
 import { setAuthToken } from '@/utils/auth-utils';
 import { useForm } from '@tanstack/react-form';
 import { useQueryClient } from '@tanstack/react-query';
-import { createFileRoute, redirect } from '@tanstack/react-router';
+import { createFileRoute, Link, redirect } from '@tanstack/react-router';
 import { toast } from 'sonner';
 
 export const Route = createFileRoute('/_login-layout/sign-in')({
   component: SignInPage,
   loader: async ({ context: { queryClient } }) => {
     const isAuth = await checkAuth(queryClient);
+    console.log('isAuth', isAuth);
+
     if (isAuth) {
       throw redirect({ to: '/' });
     }
@@ -28,8 +30,8 @@ function SignInPage() {
 
   const form = useForm({
     defaultValues: {
-      email: 'mahmood.koech287@bluewin.org',
-      password: '12345678',
+      email: '',
+      password: '',
     },
     validators: {
       onChange: signInSchema,
@@ -39,7 +41,6 @@ function SignInPage() {
           toast.success('Sign in successfully');
           setAuthToken(user.token);
           await queryClient.ensureQueryData(profileQueryOptions);
-          await delay(2000);
           navigate({ to: '/' });
         } catch (error) {
           console.error(error);
@@ -120,10 +121,21 @@ function SignInPage() {
         </form>
 
         {/* Divider */}
-        <div className="my-6 flex items-center">
-          <div className="flex-grow border-t border-gray-300"></div>
-          <span className="mx-4 text-gray-500">or</span>
-          <div className="flex-grow border-t border-gray-300"></div>
+        <div className="my-6 flex flex-col items-center">
+          <div className="flex items-center justify-center gap-1">
+            <span> Don't have an account?</span>
+            <Link
+              to="/sign-up"
+              className="text-primary"
+            >
+              Sign up
+            </Link>
+          </div>
+          <div className="flex w-full items-center">
+            <div className="flex-grow border-t border-gray-300"></div>
+            <span className="mx-4 text-gray-500">or</span>
+            <div className="flex-grow border-t border-gray-300"></div>
+          </div>
         </div>
 
         {/* Social Login */}

@@ -6,7 +6,7 @@ import { useForm } from '@tanstack/react-form';
 
 import { useSignUp } from '@/hooks/mutations/auth';
 import { signUpSchema } from '@/schemas/auth';
-import { delay, handleErrorApi } from '@/utils';
+import { handleErrorApi } from '@/utils';
 import { toast } from 'sonner';
 
 export const Route = createFileRoute('/_login-layout/sign-up')({

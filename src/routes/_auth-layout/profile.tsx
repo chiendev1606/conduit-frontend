@@ -62,7 +62,7 @@ function ProfilePage() {
       <div className="mb-8 rounded-lg bg-gray-100 p-8">
         <div className="flex flex-col items-center">
           <img
-            src={'https://static.productionready.io/images/smiley-cyrus.jpg'}
+            src={user?.image}
             alt={`${user?.username}'s avatar`}
             className="mb-4 h-24 w-24 rounded-full"
           />

@@ -9,6 +9,7 @@ export type User = {
   token: string;
   username: string;
   bio: string | null;
+  image: string;
 };
 
 export type AuthResponse = ApiResponse<{

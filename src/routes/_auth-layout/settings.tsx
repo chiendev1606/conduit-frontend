@@ -22,7 +22,7 @@ function SettingsPage() {
 
   const form = useForm({
     defaultValues: {
-      image: user?.username || '',
+      image: user?.image || '',
       username: user?.username || '',
       bio: user?.bio || '',
       email: user?.email || '',
