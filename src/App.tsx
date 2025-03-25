@@ -1,4 +1,5 @@
 import { createRouter, RouterProvider } from '@tanstack/react-router';
+import { useState } from 'react';
 import { queryClient } from './providers';
 import { routeTree } from './routeTree.gen';
 
@@ -18,6 +19,10 @@ declare module '@tanstack/react-router' {
 }
 
 function App() {
+  useState(() => {
+    document.getElementById('loading-global')?.remove();
+  });
+
   return (
     <RouterProvider
       context={{ queryClient }}
