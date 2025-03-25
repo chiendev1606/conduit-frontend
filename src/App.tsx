@@ -20,7 +20,9 @@ declare module '@tanstack/react-router' {
 
 function App() {
   useState(() => {
-    document.getElementById('loading-global')?.remove();
+    setTimeout(() => {
+      document.getElementById('loading-global')?.remove();
+    }, 1000);
   });
 
   return (
