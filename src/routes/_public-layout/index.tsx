@@ -1,5 +1,6 @@
 import Feeds from '@/components/feeds/feeds';
 import useArticlesQuery, { articleQueryOptions } from '@/hooks/queries/use-articles-query';
+import { tagQueryOptions } from '@/hooks/queries/use-tag';
 import { searchParamsSchema } from '@/schemas/search-feed-list';
 import { createFileRoute } from '@tanstack/react-router';
 import { useEffect } from 'react';
@@ -7,8 +8,11 @@ import { useEffect } from 'react';
 export const Route = createFileRoute('/_public-layout/')({
   component: HomePage,
   validateSearch: searchParamsSchema,
-  loader: async ({ context: { queryClient } }) => {
-    return queryClient.ensureQueryData(articleQueryOptions({ offset: 0, limit: 10 }));
+  loader: ({ context: { queryClient } }) => {
+    return Promise.all([
+      queryClient.ensureQueryData(articleQueryOptions({ offset: 0, limit: 10 })),
+      queryClient.ensureQueryData(tagQueryOptions),
+    ]);
   },
 });
 

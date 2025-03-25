@@ -17,7 +17,9 @@ export const profileQueryOptions: UseQueryOptions<AuthResponse | undefined, unkn
 };
 
 export const useProfileQuery = () => {
-  const query = useQuery(profileQueryOptions);
+  const enabled = !!getAuthToken();
+
+  const query = useQuery({ ...profileQueryOptions, enabled });
   return { ...query, user: query.data?.user };
 };
 

@@ -9,9 +9,11 @@ import { createFileRoute } from '@tanstack/react-router';
 
 export const Route = createFileRoute('/_public-layout/article/$slug')({
   component: ArticlePage,
-  loader: async ({ params, context: { queryClient } }) => {
-    await queryClient.ensureQueryData(commentQueryOptions(params.slug));
-    return queryClient.ensureQueryData(articleDetailsQueryOptions(params.slug));
+  loader: ({ params, context: { queryClient } }) => {
+    return Promise.all([
+      queryClient.ensureQueryData(commentQueryOptions(params.slug)),
+      queryClient.ensureQueryData(articleDetailsQueryOptions(params.slug)),
+    ]);
   },
   pendingComponent: LoadingScreen,
   errorComponent: () => <Error404 />,

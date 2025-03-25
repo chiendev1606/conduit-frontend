@@ -15,7 +15,6 @@ export const Route = createFileRoute('/_login-layout/sign-in')({
   component: SignInPage,
   loader: async ({ context: { queryClient } }) => {
     const isAuth = await checkAuth(queryClient);
-    console.log('isAuth', isAuth);
 
     if (isAuth) {
       throw redirect({ to: '/' });
