@@ -2,6 +2,7 @@ import Feeds from '@/components/feeds/feeds';
 import useArticlesQuery, { articleQueryOptions } from '@/hooks/queries/use-articles-query';
 import { searchParamsSchema } from '@/schemas/search-feed-list';
 import { createFileRoute } from '@tanstack/react-router';
+import { useEffect } from 'react';
 
 export const Route = createFileRoute('/_public-layout/')({
   component: HomePage,
@@ -18,6 +19,10 @@ function HomePage() {
   const router = Route.useMatch();
   const activeTab = router.pathname.includes('/my-feed') ? 'your' : 'global';
   const { data: articles, isLoading } = useArticlesQuery({ offset, limit, tag, author, favorited });
+
+  useEffect(() => {
+    document.getElementById('loading-global')?.remove();
+  }, []);
 
   return (
     <div>

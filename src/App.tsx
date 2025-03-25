@@ -19,12 +19,6 @@ declare module '@tanstack/react-router' {
 }
 
 function App() {
-  useState(() => {
-    setTimeout(() => {
-      document.getElementById('loading-global')?.remove();
-    }, 1000);
-  });
-
   return (
     <RouterProvider
       context={{ queryClient }}
