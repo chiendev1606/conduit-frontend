@@ -16,8 +16,7 @@ function HomePage() {
   const { page, limit, tag, author, favorited } = Route.useSearch();
   const navigate = Route.useNavigate();
   const offset = (page - 1) * limit;
-  const router = Route.useMatch();
-  const activeTab = router.pathname.includes('/my-feed') ? 'your' : 'global';
+  const activeTab = window.location.pathname.includes('/my-feed') ? 'your' : 'global';
   const { data: articles, isLoading } = useArticlesQuery({ offset, limit, tag, author, favorited });
 
   useEffect(() => {

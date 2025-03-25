@@ -5,13 +5,11 @@ import LoadingScreen from '@/components/common/loading-screen';
 import Error404 from '@/components/error/error-404';
 import { articleDetailsQueryOptions, useArticleDetailsQuery } from '@/hooks/queries/use-article-details-query';
 import useCommentsQuery, { commentQueryOptions } from '@/hooks/queries/use-comments.query';
-import { delay } from '@/utils';
 import { createFileRoute } from '@tanstack/react-router';
 
 export const Route = createFileRoute('/_public-layout/article/$slug')({
   component: ArticlePage,
   loader: async ({ params, context: { queryClient } }) => {
-    await delay(2000);
     await queryClient.ensureQueryData(commentQueryOptions(params.slug));
     return queryClient.ensureQueryData(articleDetailsQueryOptions(params.slug));
   },
