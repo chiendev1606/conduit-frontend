@@ -23,7 +23,6 @@ function ArticlePage() {
   const { slug } = Route.useParams();
   const { article } = useArticleDetailsQuery(slug);
   const { comments } = useCommentsQuery(slug);
-  c;
 
   return (
     <div>
