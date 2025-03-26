@@ -28,7 +28,6 @@ export const ArticleComments = ({ comments, authorArticle }: ArticleCommentsProp
   const { createComment, isPending: isCreatingComment } = useCreateCommentMutation();
   const { deleteComment, isPending: isDeletingComment } = useDeleteCommentMutation();
   const { updateComment, isPending: isUpdatingComment } = useUpdateCommentMutation();
-  const { user } = useProfileQuery();
 
   const refetchComments = () => {
     queryClient.invalidateQueries({ queryKey: ['comments'] });
