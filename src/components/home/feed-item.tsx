@@ -1,75 +1,44 @@
 import { useFavoriteMutation, useUnfavoriteMutation } from '@/hooks/mutations/use-favorite-mutation';
-import { queryKeys } from '@/hooks/queries/query-key';
 import { useProfileQuery } from '@/hooks/queries/use-profile-query';
-import { Article, ArticleDetailsResponse, ArticleQuery, ArticlesResponse } from '@/types/article';
+import { Article } from '@/types/article';
 import { formatDate } from '@/utils/date';
-import { useQueryClient } from '@tanstack/react-query';
 import { Link, useRouter, useRouterState, useSearch } from '@tanstack/react-router';
+import { useMemo } from 'react';
 
 interface FeedItemProps {
   data: Article;
 }
 
-const getQueryKeyArticleByPathname = ({ offset, limit, tag, author, favorited }: ArticleQuery) => {
-  if (window.location.pathname.includes('my-feed')) {
-    return queryKeys.articles.myFeeds({ offset, limit, tag, author, favorited });
-  }
-  return queryKeys.articles.list({ offset, limit, tag, author, favorited });
-};
-
 export const FeedItem = ({ data }: FeedItemProps) => {
-  const { favorite } = useFavoriteMutation();
-  const { unfavorite } = useUnfavoriteMutation();
-  const queryClient = useQueryClient();
   const routerState = useRouterState();
   const isHomepage = routerState.location.pathname === '/';
-
   const search = useSearch({ from: isHomepage ? '/_public-layout/' : '/_auth-layout/my-feed', shouldThrow: false });
 
-  const { navigate } = useRouter();
-  const { user } = useProfileQuery();
-  const updateArticleData = (data: ArticleDetailsResponse) => {
-    const queryKey = getQueryKeyArticleByPathname({
+  const articleQuery = useMemo(() => {
+    return {
       offset: ((search?.page ?? 1) - 1) * (search?.limit ?? 10),
       limit: search?.limit ?? 10,
       tag: search?.tag,
       author: search?.author,
       favorited: search?.favorited,
-    });
-
-    const queryData = queryClient.getQueryData<ArticlesResponse>(queryKey);
-    const newArticles = queryData?.articles.map((article) => {
-      if (article.slug === data.article.slug) {
-        return { ...article, ...data.article };
-      }
-      return article;
-    });
-
-    const newQueryData = {
-      ...queryData,
-      articles: newArticles,
     };
+  }, []);
 
-    queryClient.setQueryData(queryKey, newQueryData);
-  };
+  const { favorite, isPending: isFavoritePending } = useFavoriteMutation(articleQuery);
+  const { unfavorite, isPending: isUnfavoritePending } = useUnfavoriteMutation(articleQuery);
 
+  const { navigate } = useRouter();
+  const { user } = useProfileQuery();
   const handleFavorite = () => {
+    if (isFavoritePending || isUnfavoritePending) return;
     if (!user) {
       navigate({ to: '/sign-in' });
       return;
     }
     if (data.favorited) {
-      unfavorite(data.slug, {
-        onSuccess: (data) => {
-          updateArticleData(data);
-        },
-      });
+      unfavorite(data.slug);
     } else {
-      favorite(data.slug, {
-        onSuccess: (data) => {
-          updateArticleData(data);
-        },
-      });
+      favorite(data.slug);
     }
   };
 

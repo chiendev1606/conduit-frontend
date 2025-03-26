@@ -5,6 +5,7 @@ import LoadingScreen from '@/components/common/loading-screen';
 import Error404 from '@/components/error/error-404';
 import { articleDetailsQueryOptions, useArticleDetailsQuery } from '@/hooks/queries/use-article-details-query';
 import useCommentsQuery, { commentQueryOptions } from '@/hooks/queries/use-comments.query';
+import { useProfileQuery } from '@/hooks/queries/use-profile-query';
 import { createFileRoute } from '@tanstack/react-router';
 
 export const Route = createFileRoute('/_public-layout/article/$slug')({
@@ -23,6 +24,7 @@ function ArticlePage() {
   const { slug } = Route.useParams();
   const { article } = useArticleDetailsQuery(slug);
   const { comments } = useCommentsQuery(slug);
+  const { user } = useProfileQuery();
 
   return (
     <div>
@@ -33,13 +35,15 @@ function ArticlePage() {
             title={article?.title}
             body={article?.body}
           />
-          <ArticleMeta
-            username={article?.author?.username}
-            createdAt={article?.createdAt}
-            favorited={article?.favorited}
-            following={article?.author?.following}
-            favoritesCount={article?.favoritesCount}
-          />
+          {user && (
+            <ArticleMeta
+              username={article?.author?.username}
+              createdAt={article?.createdAt}
+              favorited={article?.favorited}
+              following={article?.author?.following}
+              favoritesCount={article?.favoritesCount}
+            />
+          )}
         </div>
       </div>
 

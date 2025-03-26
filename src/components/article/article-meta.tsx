@@ -15,10 +15,10 @@ interface ArticleMetaProps {
 }
 
 export const ArticleMeta = ({ username, createdAt, following, favorited, favoritesCount = 0 }: ArticleMetaProps) => {
-  const { followUser } = useFollowMutation();
-  const { unFollowUser } = useUnFollowMutation();
-  const { unfavorite } = useUnfavoriteMutation();
-  const { favorite } = useFavoriteMutation();
+  const { followUser, isPending: isFollowPending } = useFollowMutation();
+  const { unFollowUser, isPending: isUnfollowPending } = useUnFollowMutation();
+  const { unfavorite, isPending: isUnfavoritePending } = useUnfavoriteMutation();
+  const { favorite, isPending: isFavoritePending } = useFavoriteMutation();
   const { slug } = useParams({ from: '/_public-layout/article/$slug' });
   const { user } = useProfileQuery();
   const isAuthor = user?.username === username;
@@ -29,6 +29,7 @@ export const ArticleMeta = ({ username, createdAt, following, favorited, favorit
   };
 
   const handleFollow = () => {
+    if (isFollowPending || isUnfollowPending) return;
     if (following) {
       unFollowUser(username, { onSuccess: refetchArticle });
     } else {
@@ -37,6 +38,7 @@ export const ArticleMeta = ({ username, createdAt, following, favorited, favorit
   };
 
   const handleFavorite = () => {
+    if (isFavoritePending || isUnfavoritePending) return;
     if (favorited) {
       unfavorite(slug, { onSuccess: refetchArticle });
     } else {
