@@ -8,6 +8,9 @@ import { useSignUp } from '@/hooks/mutations/auth';
 import { signUpSchema } from '@/schemas/auth';
 import { handleErrorApi } from '@/utils';
 import { toast } from 'sonner';
+import { setAuthToken } from '@/utils/auth-utils';
+import { queryClient } from '@/providers';
+import { queryKeys } from '@/hooks/queries/query-key';
 
 export const Route = createFileRoute('/_login-layout/sign-up')({
   component: SignUpPage,
@@ -29,9 +32,11 @@ function SignUpPage() {
       onChange: signUpSchema,
       onSubmitAsync: async ({ value }) => {
         try {
-          await signUp(value);
+          const { user } = await signUp(value);
           toast.success('Sign up successfully');
-          navigate({ to: '/sign-in' });
+          setAuthToken(user.token);
+          queryClient.invalidateQueries({ queryKey: queryKeys.users.me() });
+          navigate({ to: '/' });
         } catch (error) {
           console.error(error);
           return {

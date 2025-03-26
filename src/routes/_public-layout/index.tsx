@@ -1,3 +1,4 @@
+import LoadingScreen from '@/components/common/loading-screen';
 import Feeds from '@/components/feeds/feeds';
 import useArticlesQuery, { articleQueryOptions } from '@/hooks/queries/use-articles-query';
 import { tagQueryOptions } from '@/hooks/queries/use-tag';
@@ -14,6 +15,7 @@ export const Route = createFileRoute('/_public-layout/')({
       queryClient.ensureQueryData(tagQueryOptions),
     ]);
   },
+  pendingComponent: LoadingScreen,
 });
 
 function HomePage() {

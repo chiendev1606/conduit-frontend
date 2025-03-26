@@ -21,7 +21,7 @@ export class AuthServices extends BaseServices {
   };
 
   signUp = async (data: SignUpSchema) => {
-    return this.post('', { user: data });
+    return this.post<AuthResponse>('', { user: data });
   };
 
   getMe = async () => {
