@@ -28,6 +28,7 @@ export const ArticleComments = ({ comments, authorArticle }: ArticleCommentsProp
   const { createComment, isPending: isCreatingComment } = useCreateCommentMutation();
   const { deleteComment, isPending: isDeletingComment } = useDeleteCommentMutation();
   const { updateComment, isPending: isUpdatingComment } = useUpdateCommentMutation();
+  const { user } = useProfileQuery();
 
   const refetchComments = () => {
     queryClient.invalidateQueries({ queryKey: ['comments'] });
@@ -98,17 +99,19 @@ export const ArticleComments = ({ comments, authorArticle }: ArticleCommentsProp
   return (
     <div className="mx-auto max-w-3xl py-8">
       {/* Comment Form */}
-      <div className="comment-form-container mb-8">
-        <h3 className="mb-3 text-lg font-medium">{editingComment ? 'Edit Comment' : 'Add Comment'}</h3>
-        <CommentForm
-          initialValue={editingComment ? editingComment.body : ''}
-          onSubmit={handleFormSubmit}
-          onCancel={editingComment ? handleCancelEdit : undefined}
-          isLoading={isCreatingComment || isUpdatingComment}
-          submitLabel={editingComment ? 'Update Comment' : 'Post Comment'}
-          key={editingComment ? `edit-${editingComment.id}` : 'create'}
-        />
-      </div>
+      {!!user && (
+        <div className="comment-form-container mb-8">
+          <h3 className="mb-3 text-lg font-medium">{editingComment ? 'Edit Comment' : 'Add Comment'}</h3>
+          <CommentForm
+            initialValue={editingComment ? editingComment.body : ''}
+            onSubmit={handleFormSubmit}
+            onCancel={editingComment ? handleCancelEdit : undefined}
+            isLoading={isCreatingComment || isUpdatingComment}
+            submitLabel={editingComment ? 'Update Comment' : 'Post Comment'}
+            key={editingComment ? `edit-${editingComment.id}` : 'create'}
+          />
+        </div>
+      )}
 
       {/* Comments List */}
       <div className="space-y-6">
