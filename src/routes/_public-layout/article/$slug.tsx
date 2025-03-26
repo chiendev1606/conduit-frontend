@@ -24,7 +24,6 @@ function ArticlePage() {
   const { slug } = Route.useParams();
   const { article } = useArticleDetailsQuery(slug);
   const { comments } = useCommentsQuery(slug);
-  const { user } = useProfileQuery();
 
   return (
     <div>
@@ -35,15 +34,14 @@ function ArticlePage() {
             title={article?.title}
             body={article?.body}
           />
-          {user && (
-            <ArticleMeta
-              username={article?.author?.username}
-              createdAt={article?.createdAt}
-              favorited={article?.favorited}
-              following={article?.author?.following}
-              favoritesCount={article?.favoritesCount}
-            />
-          )}
+
+          <ArticleMeta
+            username={article?.author?.username}
+            createdAt={article?.createdAt}
+            favorited={article?.favorited}
+            following={article?.author?.following}
+            favoritesCount={article?.favoritesCount}
+          />
         </div>
       </div>
 

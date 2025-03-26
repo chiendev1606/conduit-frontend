@@ -4,7 +4,7 @@ import { queryKeys } from '@/hooks/queries/query-key';
 import { useProfileQuery } from '@/hooks/queries/use-profile-query';
 import { formatDate } from '@/utils/date';
 import { useQueryClient } from '@tanstack/react-query';
-import { useParams } from '@tanstack/react-router';
+import { useNavigate, useParams } from '@tanstack/react-router';
 
 interface ArticleMetaProps {
   username: string;
@@ -23,12 +23,15 @@ export const ArticleMeta = ({ username, createdAt, following, favorited, favorit
   const { user } = useProfileQuery();
   const isAuthor = user?.username === username;
   const queryClient = useQueryClient();
-
+  const navigate = useNavigate();
   const refetchArticle = () => {
     queryClient.invalidateQueries({ queryKey: queryKeys.articles.detail(slug) });
   };
 
   const handleFollow = () => {
+    if (!user) {
+      return navigate({ to: '/sign-in' });
+    }
     if (isFollowPending || isUnfollowPending) return;
     if (following) {
       unFollowUser(username, { onSuccess: refetchArticle });
@@ -38,6 +41,9 @@ export const ArticleMeta = ({ username, createdAt, following, favorited, favorit
   };
 
   const handleFavorite = () => {
+    if (!user) {
+      return navigate({ to: '/sign-in' });
+    }
     if (isFavoritePending || isUnfavoritePending) return;
     if (favorited) {
       unfavorite(slug, { onSuccess: refetchArticle });
